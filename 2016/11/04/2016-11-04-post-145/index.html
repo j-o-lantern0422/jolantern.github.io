@@ -1,0 +1,124 @@
+<!doctype html><html lang=ja-jp><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:site_name" content="火だるまらんたん"><meta property="og:type" content="article"><meta property="og:image" content="https://jolantern.mugcup.xyz//img/campfire-gff66c99fb_1920.jpg"><meta property="twitter:image" content="https://jolantern.mugcup.xyz//img/campfire-gff66c99fb_1920.jpg"><meta name=title content="このブログのスピードテストを向上させた件"><meta property="og:title" content="このブログのスピードテストを向上させた件"><meta property="twitter:title" content="このブログのスピードテストを向上させた件"><meta name=description content="プログラミング、Rubyとか。コーポレートエンジニアやってます。"><meta property="og:description" content="プログラミング、Rubyとか。コーポレートエンジニアやってます。"><meta property="twitter:description" content="プログラミング、Rubyとか。コーポレートエンジニアやってます。"><meta property="twitter:card" content="summary"><meta name=keyword content="Ruby,プログラミング,ソフトウェアエンジニアリング,コーポレートエンジニアリング"><link rel="shortcut icon" href=/img/favicon.ico><title>このブログのスピードテストを向上させた件-火だるまらんたん | j-o-lantern0422's blog</title><link rel=canonical href=/2016/11/04/2016-11-04-post-145/><link rel=stylesheet href=/css/bootstrap.min.css><link rel=stylesheet href=/css/hugo-theme-cleanwhite.min.css><link rel=stylesheet href=/css/zanshang.css><link href=https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css rel=stylesheet type=text/css><script src=/js/jquery.min.js></script><script src=/js/bootstrap.min.js></script><script src=/js/hux-blog.min.js></script></head><nav class="navbar navbar-default navbar-custom navbar-fixed-top"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span><span class=icon-bar></span><span class=icon-bar></span></button>
+<a class=navbar-brand href=/>火だるまらんたん</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/>All Posts</a></li><li><a href=/categories/tech>tech</a></li><li><a href=/categories/terminal>terminal</a></li><li><a href=/categories/%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9>インフラ</a></li><li><a href=/categories/%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0>プログラミング</a></li><li><a href=/categories/%E6%97%A5%E8%A8%98>日記</a></li><li><a href=/categories/%E8%AA%AD%E6%9B%B8>読書</a></li><li><a href=/categories/%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83>開発環境</a></li><li><a href=/top/contributions/>寄稿など</a></li><li><a href=/top/archive/>ARCHIVE</a></li><li><a href=/top/about/>ABOUT</a></li></ul></div></div></div></nav><script>var $body=document.body;var $toggle=document.querySelector('.navbar-toggle');var $navbar=document.querySelector('#huxblog_navbar');var $collapse=document.querySelector('.navbar-collapse');$toggle.addEventListener('click',handleMagic)
+function handleMagic(e){if($navbar.className.indexOf('in')>0){$navbar.className=" ";setTimeout(function(){if($navbar.className.indexOf('in')<0){$collapse.style.height="0px"}},400)}else{$collapse.style.height="auto"
+$navbar.className+=" in";}}</script><style type=text/css>header.intro-header{background-image:url(/img/campfire-gff66c99fb_1920.jpg)}</style><header class=intro-header><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=/tags/wordpress title=WordPress>WordPress</a>
+<a class=tag href=/tags/%E3%83%96%E3%83%AD%E3%82%B0 title=ブログ>ブログ</a></div><h1>このブログのスピードテストを向上させた件</h1><h2 class=subheading></h2><span class=meta>Posted by
+jolantern
+on
+Thursday, November 3, 2016</span></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
+col-md-10 col-md-offset-1
+post-container"><hr><h1 id=サーバの負荷テストをかけた>サーバの負荷テストをかけた</h1><p>それはこのブログを立ち上げて2週間後ぐらいの話。
+ふと気になってこのサーバの負荷テストをかけてみた。たぶん大量のPOSTリクエストを投げてきたりしてサーバに負荷をかけてくれるんだと思う。</p><p>そうすると散々な結果が出た。6リクエスト/秒でサーバが500エラーを返す。さすがにそれはないだろ、VPSのプランのなかでは最弱だけど。と思ったけど現実そういう結果が出ている。仕方ないので他のテストもかけてみて、結果次第でチューニングを実施することにした。</p><h1 id=サーバのスピードテスト>サーバのスピードテスト</h1><p>まぁWebサイトと言えばこの手のテストツールだろう、ということでスピードテストをかけた。このサイトで。
+GTmetrix</p><p>結果はというと両方D判定。遅い。</p><p>私のブログがそんなたくさんの人に読んでもらえるのかという問題はおいておいて、これではGoogleにインデックスすらされないのではなかろうかという恐怖が有る。それは困るし、書いた以上誰かしらの目には止まりたいものだし、レスポンスの遅すぎるサイトは無いのと同じだろう。</p><h1 id=原因を調べる>　原因を調べる</h1><p>このブログはnginxがホストしているWordpressだ。故にnginxの設定を見直せば多少解決するはずであるが、アプローチがわからなかった。</p><p>ずぶの素人ではないにしろ、高速化を考える設計レベルの思考は経験がなかった。</p><p>そこで寄らば大樹の影、巨人の方の上に立つということでGoogle先生のツールの恩恵にあやかることにした。下記ツール。</p><p>PageSpeed Insights</p><p>これを使うとモバイルとPCの両方を前提にしたスピードテストが出来る。ちなみに先にだしたD判定という数値だが片方はこのテストのスコアをもとに出してくれている。</p><p>そしてこのテストツールはテストするだけじゃなくて、改善案を提示してくれる。</p><h1 id=通信を圧縮する>通信を圧縮する</h1><p>Googleのスピードテストで出た改善案の1つに、圧縮してみてはどうかというのがあった。よくよく見てみるとnginxの設定ファイルには圧縮するような設定はなにもされていない。</p><p>確かにこれでブログはホスト出来るし、大体のチュートリアルサイトはこんな感じの設定になっている。</p><pre><code>server {
+    listen       80;
+    server_name  exsample.com;
+    root         /var/www/wordpress;
+
+    client_max_body_size 2M;
+
+    index       index.php index.html index.htm;
+    try_files $uri $uri/ /index.php?q=$uri&amp;$args;
+
+    location ~ \.php$ {
+        fastcgi_pass            127.0.0.1:9000;
+        fastcgi_index           index.php;
+        fastcgi_param           SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include                 fastcgi_params;
+    }
+    location ~ /.well-known {
+        allow all;
+    }
+}
+</code></pre><p>みたいな。</p><p>素直に圧縮しよう。</p><p>圧縮方法は2つの手法が見つかった。普通にgzip圧縮。これは一番簡単で普通はやってるらしい感じだ。でももう1つ魅力的な選択肢があって、Googleの発表したアルゴリズムでの圧縮方法。</p><p>この圧縮アルゴリズムを使うには注意点が2つ。</p><p>1つは、対応しているブラウザはChromeのVer.49以降。今は52だしレガシーなブラウザなんて知らねえぜ、というなら気にする必要はない。</p><p>2つ目は、このアルゴリズムによる圧縮方法はSSL通信の元でしか有効にならない。</p><p>これが最初気づけなくて、セットアップの手順がのってる記事を鵜呑みにしてセットアップして、ハマった点の1つ。</p><h1 id=キャッシュを使おう>キャッシュを使おう</h1><p>たぶんWordpressの高速化となると最初に出てくるんじゃないだろうかという手法。</p><p>プラグインをいれて設定して、有効化すればいいから楽。
+使ったのは下記のプラグイン。これだけでスピードテストのスコアはかなり上がった。Google先生のスピードテストは相変わらずだけど。SSL化を先にしないとダメとかそういうパターンだろうか。
+WP Super Cache</p><h1 id=実際のセットアップ手順>実際のセットアップ手順</h1><p>長々と前置きが長くなったが、簡単にセットアップ手順を記録しておく。</p><h2 id=nginxのリビルド>nginxのリビルド</h2><p>この手順を試そうと思っている人は、まずnginxのバージョンとビルドした時のオプションを確認した方がいい。</p><pre><code>&lt;br&gt;&lt;/br&gt;$ sudo nginx -V
+</code></pre><p>こうするとバージョンと、ビルド時に付与されたオプションが見える。</p><p>恥ずかしながら筆者の環境だとnginxのバージョンが古すぎて、1.6.xとかだった。かなしい。</p><p>そして調べてみるとnginxは1.11.3から動的モジュールに対応してるらしい。つまり新しいモジュールを利用するがためにリビルドしなくていいということらしいのだ。
+だったらそこまであげよう。ついでにモジュールいれよう。</p><h3 id=nginx-buildのインストール>nginx-buildのインストール</h3><p>nginxのビルドを楽にしてくれるツールがnginx-build。まんまである。</p><p>OSXならbrewで入れられるが筆者の環境はCentOS7なので、下記サイトからtarをおとして解凍、実行権を付与してパスの通っているところにおいた。</p><pre><code>&lt;br&gt;&lt;/br&gt;$ wget https://github.com/cubicdaiya/nginx-build/releases/download/v0.9.9/nginx-build-linux-amd64-0.9.9.tar.gz
+$ tar xvf nginx-build-linux-amd64-0.9.9.tar.gz
+
+$ chmod +x nginx-build
+
+$ mv nginx-build /path/to/pathnotootterudokoka
+</code></pre><h3 id=ビルド用の設定とビルド>ビルド用の設定とビルド</h3><p>nginx-buildは、nginxのmakeとconfigureスクリプトの実行を自動でやってくれる。先述したモジュールはconfigureスクリプトを叩くときに追加する必要がある。動的モジュールに対応しているとはいえできればあとから追加なんて面倒な真似はしたくないよねってことでスクリプトを書く。</p><pre><code>$ cat nginx_configure.sh
+./configure \
+ --user=nginx \
+ --group=nginx \
+ --sbin-path=/usr/sbin/nginx \
+ --conf-path=/etc/nginx/nginx.conf \
+ --with-http_gzip_static_module \
+ --with-http_gunzip_module \
+ --with-http_stub_status_module \
+ --with-http_realip_module \
+ --add-module=/usr/local/src/ngx_brotli
+</code></pre><p><code>/usr/local/src/ngx_brotli</code> に例のGoogle先生圧縮モジュールのソースがおいてある前提。解凍したやつをまんま <code>/usr/local/src/</code>　においただけ。</p><h2 id=ssl化>SSL化</h2><p>nginxにSSLの設定をいれてあげればよい。ただし、今回は外部に公開しているブログだから、自己証明書はつかいたくない。というわけで、Let&rsquo;s Encryptにお世話になることにした。比較的最近出たサービスで、無償でSSL証明書を発行してくれる。ただし60日ごとに更新が必要で、スクリプトによる自動更新を推奨しているらしい。
+ここが非常に参考になった。ここの通りにやっただけである。
+光の速さのWEBサーバー(nginx)をlet&rsquo;s encryptでSSL化及びHTTP/2化。ついでにセキュリティ評価をA＋にする。</p><h1 id=結果>結果</h1><p>多少マシになた。なんかこのカスタムをした直後より悪くなってるので、また見直すべきなのだろうな。</p><p><img src=/images/2016/11/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88-2016-11-02-9.52.19-300x90.png alt=スコア></p><p>そしてこれが最終的なnginxの設定。</p><pre><code>server {
+
+    listen       443 ssl;
+
+    ssl_certificate /path/to/chain.pem;
+    ssl_certificate_key /path/to/privkey.pem;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers &amp;#39;EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH&amp;#39;;
+
+
+    brotli on;
+    gzip on;
+    gzip_min_length 0;
+    gzip_buffers 4 8k;
+    gzip_types text/plain text/xml application/javascript application/x-javascript text/css;
+    gzip_disable &quot;msie6&quot;;
+    gzip_vary on;
+    gzip_static on;
+    gzip_proxied any;
+
+    # サーバー名
+    server_name  server.coom;
+
+    root         /path/to/root;
+
+    client_max_body_size 50M;
+    # index file タイプの優先順を設定します。
+    index       index.php index.html index.htm;
+
+    # ログファイル名
+    access_log   /path/to/access.log;
+    error_log    /path/to/error.log;
+
+    try_files $uri $uri/ /index.php?q=$uri&amp;$args;
+
+    # PHP FPM
+    location ~ \.php$ {
+        fastcgi_pass            127.0.0.1:9000;
+        fastcgi_index           index.php;
+        fastcgi_param           SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include                 fastcgi_params;
+    }
+    location ~ /.well-known {
+        allow all;
+    }
+}
+</code></pre><hr><ul class=pager><li class=previous><a href=/2016/10/30/2016-10-30-post-130/ data-toggle=tooltip data-placement=top title=情報セキュリティEXPO2016に行ってきた件>&larr;
+Previous Post</a></li><li class=next><a href=/2016/11/07/2016-11-07-post-162/ data-toggle=tooltip data-placement=top title=月700円課金したら無料でプライベートリポジトリがたくさん作れる>Next
+Post &rarr;</a></li></ul></div><div class="col-lg-2 col-lg-offset-0
+visible-lg-block
+sidebar-container
+catalog-container"><div class=side-catalog><hr class="hidden-sm hidden-xs"><h5><a class=catalog-toggle href=#>CATALOG</a></h5><ul class=catalog-body></ul></div></div><div class="col-lg-8 col-lg-offset-2
+col-md-10 col-md-offset-1
+sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5><a href=/tags/>FEATURED TAGS</a></h5><div class=tags><a href=/tags/docker title=docker>docker</a>
+<a href=/tags/go title=go>go</a>
+<a href=/tags/oss title=oss>oss</a>
+<a href=/tags/ruby title=ruby>ruby</a>
+<a href=/tags/windows title=windows>windows</a>
+<a href=/tags/wordpress title=wordpress>wordpress</a>
+<a href=/tags/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89 title=環境構築>環境構築</a>
+<a href=/tags/%E8%AA%AD%E6%9B%B8 title=読書>読書</a></div></section></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=https://twitter.com/j_o_lantern0422><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i><i class="fab fa-twitter fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/j-o-lantern0422><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i><i class="fab fa-github fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://www.linkedin.com/in/yourlinkedinid><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i><i class="fab fa-linkedin fa-stack-1x fa-inverse"></i></span></a></li><li><a href rel=alternate type=application/rss+xml title=火だるまらんたん><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i><i class="fas fa-rss fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; 火だるまらんたん 2022<br><a href=https://themes.gohugo.io/hugo-theme-cleanwhite>CleanWhite Hugo Theme</a> by <a href=https://zhaohuabing.com>Huabing</a> |
+<iframe style=margin-left:2px;margin-bottom:-5px frameborder=0 scrolling=0 width=100px height=20px src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true"></iframe></p></div></div></div></footer><script>function loadAsync(u,c){var d=document,t='script',o=d.createElement(t),s=d.getElementsByTagName(t)[0];o.src=u;if(c){o.addEventListener('load',function(e){c(null,e);},false);}
+s.parentNode.insertBefore(o,s);}</script><script>if($('#tag_cloud').length!==0){loadAsync("/js/jquery.tagcloud.js",function(){$.fn.tagcloud.defaults={color:{start:'#bbbbee',end:'#0085a1'},};$('#tag_cloud a').tagcloud();})}</script><script>loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js",function(){var $nav=document.querySelector("nav");if($nav)FastClick.attach($nav);})</script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-126042554-2','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script type=text/javascript>function generateCatalog(selector){_containerSelector='div.post-container'
+var P=$(_containerSelector),a,n,t,l,i,c;a=P.find('h1,h2,h3,h4,h5,h6');$(selector).html('')
+a.each(function(){n=$(this).prop('tagName').toLowerCase();i="#"+$(this).prop('id');t=$(this).text();c=$('<a href="'+i+'" rel="nofollow">'+t+'</a>');l=$('<li class="'+n+'_nav"></li>').append(c);$(selector).append(l);});return true;}
+generateCatalog(".catalog-body");$(".catalog-toggle").click((function(e){e.preventDefault();$('.side-catalog').toggleClass("fold")}))
+loadAsync("\/js\/jquery.nav.js",function(){$('.catalog-body').onePageNav({currentClass:"active",changeHash:!1,easing:"swing",filter:"",scrollSpeed:700,scrollOffset:0,scrollThreshold:.2,begin:null,end:null,scrollChange:null,padding:80});});</script></body></html>
